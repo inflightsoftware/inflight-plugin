@@ -1,0 +1,8 @@
+{
+	"mcpServers": {
+		"inflight": {
+			"type": "http",
+			"url": "https://mcp.inflight.co"
+		}
+	}
+}

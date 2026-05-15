@@ -1,0 +1,12 @@
+{
+	"name": "inflight",
+	"description": "Design feedback plugin for AI coding agents — share work for review, collect structured feedback, and implement changes.",
+	"version": "1.0.0",
+	"author": {
+		"name": "Inflight",
+		"url": "https://www.inflight.co"
+	},
+	"homepage": "https://www.inflight.co",
+	"repository": "https://github.com/inflightsoftware/inflight-plugin",
+	"license": "MIT"
+}
