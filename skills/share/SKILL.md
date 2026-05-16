@@ -11,7 +11,7 @@ You are helping someone share their work for design review via Inflight. Communi
 
 ## Step 0: Check Inflight Connection
 
-Before anything else, verify the Inflight MCP tools are available by calling `inflight_list_workspaces`. If the call succeeds, continue to Step 1.
+Before anything else, verify the Inflight MCP tools are available by calling `inflight_list_workspaces`. If the call succeeds, remember the result (you'll need it in Step 1 if the widget isn't installed). Continue to Step 1.
 
 If it fails or the tool isn't available, tell the user:
 
@@ -33,7 +33,7 @@ Search for `inflight.co/widget.js` in layout/HTML files (not docs or configs). C
 
 **If NOT found:** The widget needs to be added.
 
-1. Call `inflight_list_workspaces`. This returns each workspace's `widget_id` and indicates which is the user's default (`is_default: true`).
+1. Use the workspace data from Step 0 (don't call `inflight_list_workspaces` again). Each workspace has a `widget_id` and indicates which is the user's default (`is_default: true`).
    - If only one workspace → use it automatically
    - If one is marked `is_default: true` → use it automatically
    - If multiple and no default → ask: "Which workspace is this project for?"
@@ -141,7 +141,13 @@ If the user picks an existing project whose latest version has **0 comments** (n
 
 ## Step 7: Generate Feedback Guide
 
-This is the most important step. Read the diff between the current branch and the default branch to understand what changed visually. Focus on UI-relevant files (components, styles, layouts, pages). If the diff is too large, start with the changed file list and then read the most relevant files.
+This is the most important step. Read the diff to understand what changed visually.
+
+- **Feature branch:** diff between the current branch and the default branch (`git diff main...HEAD` or `git diff master...HEAD`).
+- **On main/default branch:** diff the last few commits (`git diff HEAD~5..HEAD`) or look at recent commit messages to understand what changed.
+- **No meaningful UI changes in diff:** skip the feedback guide (pass empty array). Backend-only changes don't need design review questions.
+
+Focus on UI-relevant files (components, styles, layouts, pages). If the diff is too large, start with the changed file list and then read the most relevant files.
 
 Generate a focused feedback guide — **3-5 items** tailored to the actual visual changes.
 
