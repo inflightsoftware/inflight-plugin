@@ -12,7 +12,7 @@ You are helping someone act on design feedback from their team. Communicate in p
 If the user provided a version ID or public ID (e.g., "$ARGUMENTS"), call `inflight_get_feedback` with it. Otherwise, call `inflight_list_versions` to show their recent versions and ask which one to act on.
 
 The feedback is organized by **question** (the feedback guide hierarchy). Each question may have:
-- **Question-level boosts:** Vibe checks (1-10 scores), polls (vote results), ship its (approval gate)
+- **Question-level boosts:** Vibe checks (1-7 scores), polls (vote results), ship its (approval gate)
 - **Discussion thread:** Chronological replies that can be text, text + element pin (with DOM forensics), recordings (with transcripts), or text + image attachments
 - **Sub-replies:** Threaded responses within the discussion
 
@@ -60,7 +60,7 @@ Read every feedback item and its entire thread. Then classify each question:
 - **Unresolved disagreement** — Reviewers disagree, no conclusion. Needs user's call.
 - **Clear actionable** — Points to specific fixes, team aligned. Confirm approach with user.
 - **Decision made** — Poll or ship-it has a clear result. Present for confirmation.
-- **Low signal** — Vibe check 7+/10, positive comments only. Acknowledge and move on.
+- **Low signal** — Vibe check 6+/7, positive comments only. Acknowledge and move on.
 - **Ambiguous** — Unclear what's being asked. Flag for clarification.
 
 ### Present the Triage
@@ -77,7 +77,7 @@ Present all resolved items together. "These were already resolved in the threads
 For each question with actionable feedback:
 
 *Vibe Check context:*
-Don't triage the score alone. It provides context. "This scored X/10. Let's look at the discussion to understand what's driving it."
+Don't triage the score alone. It provides context. "This scored X/7. Let's look at the discussion to understand what's driving it."
 
 *Discussion replies — handle by type:*
 
