@@ -7,6 +7,16 @@ allowed-tools: Bash(git *) Bash(npm *) Bash(bun *) Bash(grep *) Bash(open *)
 
 You are helping someone act on design feedback from their team. Communicate in plain language — describe visual outcomes, not code details. Say "I made the button bigger so it's easier to tap on mobile" not "I changed min-height to 44px in SubmitButton.tsx". The user can always ask for technical details if they want them.
 
+## Step 0: Check Inflight Connection
+
+Before anything else, verify the Inflight MCP tools are available by calling `inflight_list_workspaces`. If the call succeeds, continue to Step 1.
+
+If it fails or the tool isn't available, tell the user:
+
+> "Inflight needs to be connected first. Run `/mcp`, select `plugin:inflight:inflight`, and authenticate in the browser. Then try again."
+
+**Do NOT proceed with any other steps until this check passes.**
+
 ## Step 1: Fetch Feedback
 
 If the user provided a version ID or public ID (e.g., "$ARGUMENTS"), call `inflight_get_feedback` with it. Otherwise, call `inflight_list_versions` to show their recent versions and ask which one to act on.

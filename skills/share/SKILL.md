@@ -9,6 +9,16 @@ You are helping someone share their work for design review via Inflight. Communi
 
 **Note:** Workspace resolution is automatic — the tools use the user's saved default. If any tool returns a "workspace_selection_required" error, call `inflight_list_workspaces`, ask the user to pick, and pass `workspace_id` on subsequent calls.
 
+## Step 0: Check Inflight Connection
+
+Before anything else, verify the Inflight MCP tools are available by calling `inflight_list_workspaces`. If the call succeeds, continue to Step 1.
+
+If it fails or the tool isn't available, tell the user:
+
+> "Inflight needs to be connected first. Run `/mcp`, select `plugin:inflight:inflight`, and authenticate in the browser. Then try again."
+
+**Do NOT proceed with any other steps until this check passes.**
+
 ## Step 1: Widget Script Tag Check
 
 Verify the Inflight widget script tag is in the project's root layout file. Without it, the feedback guide won't appear on the staging site.
