@@ -175,3 +175,11 @@ Recommend re-requesting review.
 ```
 
 Push the changes and tell the user the preview deployment will update automatically.
+
+## Phase 5: Re-share for Review
+
+After pushing, ask:
+
+> "Feedback addressed and pushed. Want to share the updated version on Inflight for another round of review?"
+
+If yes, trigger the share skill. This creates a **new version** under the same project — don't override the previous one. The new version captures the iteration so reviewers can compare before/after.
