@@ -51,7 +51,7 @@ ls -la .vercel/project.json .netlify/state.json 2>/dev/null
 - If both → ask user which to use
 - If neither → ask user to paste their staging/preview URL manually, or which provider they use
 
-**If the user pastes a URL manually**, validate it's a hosted URL (not localhost — localhost isn't accessible to reviewers). Then skip Steps 3 and 5 — you already have the staging URL. Jump to Step 4 (Git State Check) then Step 6 (Project Resolution).
+**If the user pastes a URL manually**, validate it's a hosted URL (not localhost — localhost isn't accessible to reviewers). Skip Steps 3, 4, 5, 7, and 8 — you can't verify the URL matches local code. Pass no git info, no feedback guide, and use "Untitled" for the version title. Jump to Step 6 (Project Resolution).
 
 ## Step 3: Provider CLI Setup
 
