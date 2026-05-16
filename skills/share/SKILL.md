@@ -5,7 +5,7 @@ allowed-tools: Bash(git *) Bash(vercel *) Bash(netlify *) Bash(npm install *) Ba
 
 # Inflight: Share Work for Review
 
-You are helping someone share their work for design review via Inflight. Communicate in plain language — the user may not be technical. Execute steps sequentially — do NOT skip, reorder, or combine steps unless the step itself says to skip. Complete each step fully before moving to the next.
+You are helping someone share their work for design review via Inflight. Communicate in plain language — the user may not be technical. Execute steps sequentially — do NOT skip, reorder, or combine steps unless the step itself says to skip. Complete each step fully before moving to the next. **Only present ONE issue or question to the user at a time.** If a step requires user input or action, stop and wait — do not continue to the next step or mention issues from later steps.
 
 **Note:** Workspace resolution is automatic — the tools use the user's saved default. If any tool returns a "workspace_selection_required" error, call `inflight_list_workspaces`, ask the user to pick, and pass `workspace_id` on subsequent calls.
 
@@ -24,6 +24,7 @@ If it fails or the tool isn't available, tell the user:
 Verify the Inflight widget script tag is in the project's root layout file. Without it, the feedback guide won't appear on the staging site.
 
 Search for `inflight.co/widget.js` in layout/HTML files (not docs or configs). Common locations:
+
 - **Next.js:** `app/layout.tsx`
 - **Vite/CRA:** `index.html`
 - **Remix:** `app/root.tsx`
@@ -59,7 +60,7 @@ ls -la .vercel/project.json .netlify/state.json 2>/dev/null
 - If `.vercel/project.json` exists → Vercel
 - If `.netlify/state.json` exists → Netlify
 - If both → ask user which to use
-- If neither → ask user to paste their staging/preview URL manually, or which provider they use
+- If neither → these files may be missing in git worktrees (e.g., Conductor). Check `package.json` or config files for Vercel/Netlify references. If still nothing, ask user which provider they use or to paste their staging/preview URL manually.
 
 **If the user pastes a URL manually**, validate it's a hosted URL (not localhost — localhost isn't accessible to reviewers). Skip Steps 3, 4, 5, 7, and 8 — you can't verify the URL matches local code. Pass no git info, no feedback guide, and use "Untitled" for the version title. Jump to Step 6 (Project Resolution).
 
@@ -99,6 +100,7 @@ Parse the JSON output. Find the deployment matching your commit SHA. **Always us
 If the matching deployment status is "READY", use that URL.
 
 If no READY deployment matches the current commit:
+
 - **Build failed/errored** → tell the user: "The deployment for your latest commit failed to build. Fix the build error, push again, and re-run this flow." Stop here — don't fall back to branch aliases or older deployments.
 - **Still building** → "Your deployment is still building. I'll check again in a moment." Retry after 15-30 seconds, up to 2 minutes.
 - **No deployment at all** → ask the user to paste a staging URL manually.
@@ -114,6 +116,7 @@ netlify status --json 2>/dev/null
 Parse the JSON for the site URL. Netlify deploy previews follow the pattern `deploy-preview-<PR#>--<site-name>.netlify.app` or `<branch>--<site-name>.netlify.app`.
 
 If `netlify status` doesn't give a deploy preview URL, try:
+
 ```bash
 netlify deploys --json 2>/dev/null | head -50
 ```
@@ -126,11 +129,12 @@ Same retry logic applies: if just pushed and still building, wait and retry up t
 
 **MANDATORY: You MUST present options and wait for the user to choose. Do NOT auto-select a project based on branch name or any other heuristic. Do NOT skip this step.**
 
-Call `inflight_list_recent_projects`. Present the projects to the user as a numbered list with their latest version title and branch. Highlight any that match the current git branch. Include "Create new project" as an option. Ask the user to pick.
+Call `inflight_list_recent_projects` with `limit: 5`. Present the projects to the user as a numbered list with their latest version title and branch. Highlight any that match the current git branch. Include "Show more projects" and "Create new project" as options. If the user picks "Show more", call again with `limit: 10` and re-present. Ask the user to pick.
 
 **Wait for the user's response before proceeding. Do NOT assume which project the user wants.**
 
 If the user picks an existing project whose latest version has **0 comments** (no feedback yet), you MUST ask: "This version has no feedback yet. Would you like to:"
+
 1. Update its staging URL (keeps the same version)
 2. Create a new version
 
@@ -165,23 +169,30 @@ Generate a focused feedback guide — **3-5 items** tailored to the actual visua
 6. **Don't generate generic questions.** Every question should be impossible to ask without having read the diff. If you find yourself writing "How does the overall design look?", you haven't read the diff closely enough.
 
 ### Example (good):
+
 For a diff that changes checkout button styling and adds a loading state:
+
 ```json
 [
-  { "type": "vibe_check", "text": "How does the updated checkout flow feel?" },
-  { "type": "question", "text": "Does the new loading spinner give enough feedback after clicking Submit?" },
-  { "type": "poll", "text": "Which button style works better?", "options": [{"text": "Current rounded style"}, {"text": "Previous square style"}] },
-  { "type": "question", "text": "Check the form on mobile — any spacing or tap target issues?" },
-  { "type": "ship_it", "text": "Ready to ship?" }
+	{ "type": "vibe_check", "text": "How does the updated checkout flow feel?" },
+	{ "type": "question", "text": "Does the new loading spinner give enough feedback after clicking Submit?" },
+	{
+		"type": "poll",
+		"text": "Which button style works better?",
+		"options": [{ "text": "Current rounded style" }, { "text": "Previous square style" }]
+	},
+	{ "type": "question", "text": "Check the form on mobile — any spacing or tap target issues?" },
+	{ "type": "ship_it", "text": "Ready to ship?" }
 ]
 ```
 
 ### Example (bad — too generic):
+
 ```json
 [
-  { "type": "vibe_check", "text": "How does the design look?" },
-  { "type": "question", "text": "Any feedback?" },
-  { "type": "question", "text": "Does everything work correctly?" }
+	{ "type": "vibe_check", "text": "How does the design look?" },
+	{ "type": "question", "text": "Any feedback?" },
+	{ "type": "question", "text": "Does everything work correctly?" }
 ]
 ```
 
@@ -201,6 +212,7 @@ Don't use generic names like "UI updates" or "Various changes" for either.
 ## Step 9: Create Version
 
 Call `inflight_create_version` with everything gathered:
+
 - `staging_url` from Step 5
 - `version_title` from Step 8
 - `project_name` from Step 8
@@ -212,6 +224,7 @@ Call `inflight_create_version` with everything gathered:
 ## Step 10: Done
 
 Open the staging URL returned by the tool (it includes an auth token):
+
 ```bash
 open <staging_url from tool response>
 ```
