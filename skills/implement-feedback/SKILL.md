@@ -182,4 +182,4 @@ After pushing, ask:
 
 > "Feedback addressed and pushed. Want to share the updated version on Inflight for another round of review?"
 
-If yes, trigger the share skill. This creates a **new version** under the same project — don't override the previous one. The new version captures the iteration so reviewers can compare before/after.
+If yes, run the full share flow (staging URL, git info, feedback guide, etc.). Create a **new version** under the **same `project_id`** from the version you just acted on — don't create a new project or override the previous version.
