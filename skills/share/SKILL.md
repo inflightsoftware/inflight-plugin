@@ -124,11 +124,20 @@ Same retry logic applies: if just pushed and still building, wait and retry up t
 
 ## Step 6: Project Resolution
 
+**MANDATORY: You MUST present options and wait for the user to choose. Do NOT auto-select a project based on branch name or any other heuristic. Do NOT skip this step.**
+
 Call `inflight_list_recent_projects`. Present the projects to the user as a numbered list with their latest version title and branch. Highlight any that match the current git branch. Include "Create new project" as an option. Ask the user to pick.
 
-If the user picks an existing project whose latest version has **0 comments** (no feedback yet), ask: "This version has no feedback. Update its staging URL, or create a new version?"
-- Update → use `override_version_id` (the version ID from the project's latest version)
-- New version → normal flow
+**Wait for the user's response before proceeding. Do NOT assume which project the user wants.**
+
+If the user picks an existing project whose latest version has **0 comments** (no feedback yet), you MUST ask: "This version has no feedback yet. Would you like to:"
+1. Update its staging URL (keeps the same version)
+2. Create a new version
+
+**Wait for the user's response. Do NOT auto-select "update" or "new version" — this is the user's decision.**
+
+- If user picks update → use `override_version_id` (the version ID from the project's latest version)
+- If user picks new version → normal flow (no `override_version_id`)
 
 ## Step 7: Generate Feedback Guide
 
