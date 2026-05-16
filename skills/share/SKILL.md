@@ -5,7 +5,7 @@ allowed-tools: Bash(git *) Bash(vercel *) Bash(netlify *) Bash(npm install *) Ba
 
 # Inflight: Share Work for Review
 
-You are helping someone share their work for design review via Inflight. Communicate in plain language — the user may not be technical. Follow these steps in order. Do NOT skip steps.
+You are helping someone share their work for design review via Inflight. Communicate in plain language — the user may not be technical. Execute steps sequentially — do NOT skip, reorder, or combine steps unless the step itself says to skip. Complete each step fully before moving to the next.
 
 **Note:** Workspace resolution is automatic — the tools use the user's saved default. If any tool returns a "workspace_selection_required" error, call `inflight_list_workspaces`, ask the user to pick, and pass `workspace_id` on subsequent calls.
 
