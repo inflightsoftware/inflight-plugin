@@ -107,9 +107,9 @@ If no READY deployment matches the current commit:
 
 - **Build failed/errored** → "Your Vercel build failed. Fix the build error and push again — I'll pick up where we left off." Stop here.
 - **Still building** → "Found your Vercel deployment — it's still building. I'll keep checking until it's ready." Retry every 15 seconds, up to 2 minutes.
-- **No deployment at all** → "No Vercel deployment found for this commit. Check your Vercel project is linked and push again."
+- **No deployment at all** → "No Vercel deployment found for this commit. You can paste a staging URL if you have one, or check your Vercel project is linked and push again."
 
-**Never suggest pasting a URL as a fallback in this step.** The user already chose a provider in Step 2. Stay on that path.
+**Only suggest pasting a URL for the "no deployment at all" case.** For build failures and building states, stay on the provider path.
 
 **For Netlify:**
 
@@ -131,9 +131,9 @@ Find the deploy matching the current commit SHA. If no match:
 
 - **Build failed/errored** → "Your Netlify build failed. Fix the build error and push again — I'll pick up where we left off." Stop here.
 - **Still building** → "Found your Netlify deployment — it's still building. I'll keep checking until it's ready." Retry every 15 seconds, up to 2 minutes.
-- **No deployment at all** → "No Netlify deployment found for this commit. Check your Netlify site is linked and push again."
+- **No deployment at all** → "No Netlify deployment found for this commit. You can paste a staging URL if you have one, or check your Netlify site is linked and push again."
 
-**Never suggest pasting a URL as a fallback in this step.** The user already chose a provider in Step 2. Stay on that path.
+**Only suggest pasting a URL for the "no deployment at all" case.** For build failures and building states, stay on the provider path.
 
 ## Step 6: Project Resolution
 
