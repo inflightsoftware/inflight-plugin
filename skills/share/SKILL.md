@@ -75,13 +75,17 @@ Ensure the provider CLI is installed and authenticated. Check if the CLI is avai
 
 **You MUST check the git state before resolving the staging URL.** The deployment won't include uncommitted or unpushed changes. Run `git status` and check:
 
-- **Uncommitted changes** → STOP. List the changed files and ask: "You have uncommitted changes that won't be in the deployment. Want me to commit and push them first?" If yes, commit with a good message and push. If no, warn that the deployment won't match their local code.
-- **Unpushed commits** → STOP. Ask: "You have unpushed commits. Push them so the deployment includes your latest changes?" If yes, push.
-- **No remote (branch never pushed)** → STOP. Tell the user there's no deployment yet, push the branch first.
-- **Detached HEAD** → STOP. Warn the user to check out a branch first.
-- **Clean and up to date** → continue to Step 5.
+Check for issues in this priority order. **Handle only the FIRST issue found** — fix it, then re-check. Do NOT list multiple issues at once.
 
-**Do NOT proceed to Step 5 until git state is clean or the user explicitly chose to continue with uncommitted changes.**
+1. **Detached HEAD** → "You're in detached HEAD state. Check out a branch first."
+2. **Uncommitted changes** → "You have uncommitted changes. Want me to commit and push them?"
+3. **No remote (branch never pushed)** → "This branch hasn't been pushed yet. Want me to push it?"
+4. **Unpushed commits** → "You have unpushed commits. Want me to push them?"
+5. **Clean and up to date** → continue to Step 5.
+
+After fixing an issue, re-run `git status` to check for the next one. Keep it simple — one question, one action.
+
+**Do NOT proceed to Step 5 until git state is clean or the user explicitly chose to continue.**
 
 ## Step 5: Resolve Staging URL
 
@@ -102,7 +106,7 @@ If the matching deployment status is "READY", use that URL.
 If no READY deployment matches the current commit:
 
 - **Build failed/errored** → tell the user: "The deployment for your latest commit failed to build. Fix the build error, push again, and re-run this flow." Stop here — don't fall back to branch aliases or older deployments.
-- **Still building** → "Your deployment is still building. I'll check again in a moment." Retry after 15-30 seconds, up to 2 minutes.
+- **Still building** → "Your deployment is still building. I'll check again in a moment." Retry every 15 seconds, up to 2 minutes.
 - **No deployment at all** → ask the user to paste a staging URL manually.
 
 **For Netlify:**
