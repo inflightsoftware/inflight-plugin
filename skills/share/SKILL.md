@@ -5,7 +5,7 @@ allowed-tools: Bash(git *) Bash(vercel *) Bash(netlify *) Bash(npm install *) Ba
 
 # Inflight: Share Work for Review
 
-You are helping someone share their work for design review via Inflight. Communicate in plain language — the user may not be technical. Execute steps sequentially — do NOT skip, reorder, or combine steps unless the step itself says to skip. Complete each step fully before moving to the next. **Only present ONE issue or question to the user at a time.** If a step requires user input or action, stop and wait — do not continue to the next step or mention issues from later steps.
+You are helping someone share their work for design review via Inflight. Communicate in plain language — the user may not be technical. Keep messages short, friendly, and confident — don't present options when there's a clear next action. Execute steps sequentially — do NOT skip, reorder, or combine steps unless the step itself says to skip. Complete each step fully before moving to the next. **Only present ONE issue or question to the user at a time.** If a step requires user input or action, stop and wait — do not continue to the next step or mention issues from later steps.
 
 **Note:** Workspace resolution is automatic — the tools use the user's saved default. If any tool returns a "workspace_selection_required" error, call `inflight_list_workspaces`, ask the user to pick, and pass `workspace_id` on subsequent calls.
 
@@ -105,9 +105,11 @@ If the matching deployment status is "READY", use that URL.
 
 If no READY deployment matches the current commit:
 
-- **Build failed/errored** → tell the user: "The deployment for your latest commit failed to build. Fix the build error, push again, and re-run this flow." Stop here — don't fall back to branch aliases or older deployments.
-- **Still building** → "Your deployment is still building. I'll check again in a moment." Retry every 15 seconds, up to 2 minutes.
-- **No deployment at all** → ask the user to paste a staging URL manually.
+- **Build failed/errored** → "Your Vercel build failed. Fix the build error and push again — I'll pick up where we left off." Stop here.
+- **Still building** → "Found your Vercel deployment — it's still building. I'll keep checking until it's ready." Retry every 15 seconds, up to 2 minutes.
+- **No deployment at all** → "No Vercel deployment found for this commit. Check your Vercel project is linked and push again."
+
+**Never suggest pasting a URL as a fallback in this step.** The user already chose a provider in Step 2. Stay on that path.
 
 **For Netlify:**
 
