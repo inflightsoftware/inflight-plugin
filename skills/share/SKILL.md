@@ -127,9 +127,13 @@ If `netlify status` doesn't give a deploy preview URL, try:
 netlify deploys --json 2>/dev/null | head -50
 ```
 
-Find the deploy matching the current commit SHA. If no match, show the user the list with statuses and ask them to pick or paste manually.
+Find the deploy matching the current commit SHA. If no match:
 
-Same retry logic applies: if just pushed and still building, wait and retry up to 2 minutes.
+- **Build failed/errored** → "Your Netlify build failed. Fix the build error and push again — I'll pick up where we left off." Stop here.
+- **Still building** → "Found your Netlify deployment — it's still building. I'll keep checking until it's ready." Retry every 15 seconds, up to 2 minutes.
+- **No deployment at all** → "No Netlify deployment found for this commit. Check your Netlify site is linked and push again."
+
+**Never suggest pasting a URL as a fallback in this step.** The user already chose a provider in Step 2. Stay on that path.
 
 ## Step 6: Project Resolution
 
