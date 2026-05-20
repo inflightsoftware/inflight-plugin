@@ -1,4 +1,5 @@
 ---
+name: implement-feedback
 description: Act on design feedback from an Inflight version. Use when the user wants to apply feedback, fix review comments, implement feedback, go through comments, or act on feedback from reviewers. Triggers on 'apply feedback', 'fix the review', 'implement feedback', 'act on feedback', 'go through the comments'.
 allowed-tools: Bash(git *) Bash(npm *) Bash(bun *) Bash(grep *) Bash(open *)
 ---

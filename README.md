@@ -4,9 +4,15 @@ Design feedback plugin for AI coding agents — share work for review, collect s
 
 ## Installation
 
+**Claude Code:**
+
 ```bash
 npx plugins add inflightsoftware/inflight-plugin
 ```
+
+**Cursor:**
+
+Settings > Plugins > search "Inflight" > Install
 
 ## What it provides
 

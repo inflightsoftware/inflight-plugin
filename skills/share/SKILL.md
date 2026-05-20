@@ -1,4 +1,5 @@
 ---
+name: share
 description: Share work for design review on Inflight. Use when the user wants to share work, get feedback, publish for review, or send work to their team. Triggers on 'share this', 'get feedback on this', 'publish for review', 'send to team', 'share to inflight', 'share my work'.
 allowed-tools: Bash(git *) Bash(vercel *) Bash(netlify *) Bash(npm install *) Bash(open *) Bash(ls *) Bash(grep *) Bash(curl *)
 ---
