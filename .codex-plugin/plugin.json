@@ -18,6 +18,7 @@
 		"vercel",
 		"netlify"
 	],
+	"logo": "./assets/inflight.png",
 	"skills": "./skills/",
 	"interface": {
 		"displayName": "Inflight",
