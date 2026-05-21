@@ -22,7 +22,7 @@ If you encounter errors at any step, try to resolve them automatically. Here are
 - **No deploy preview URL found** → the site may not have deploy previews enabled. Ask the user to paste the URL manually.
 
 ## Inflight Issues
-- **"workspace_selection_required" error from tools** → call `inflight_list_workspaces`, ask user to pick, pass `workspace_id` explicitly.
+- **"workspace_selection_required" error from tools** → call `inflight_get_workspaces`, ask user to pick, then call `inflight_set_default_workspace` with their choice.
 - **Version creation fails** → check that the staging URL is valid (not localhost, has a domain). Check that the workspace has an active subscription.
 - **Widget script tag not working after deploy** → make sure the commit with the script tag was pushed AND that the deployment was built from that commit.
 

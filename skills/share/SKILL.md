@@ -8,11 +8,11 @@ allowed-tools: Bash(git *) Bash(vercel *) Bash(netlify *) Bash(npm install *) Ba
 
 You are helping someone share their work for design review via Inflight. Communicate in plain language — the user may not be technical. Keep messages short, friendly, and confident — don't present options when there's a clear next action. **Never reference step numbers** — describe what you're doing, not which step you're on. Execute steps sequentially — do NOT skip, reorder, or combine steps unless the step itself says to skip. Complete each step fully before moving to the next. **Only present ONE issue or question to the user at a time.** If a step requires user input or action, stop and wait — do not continue to the next step or mention issues from later steps.
 
-**Note:** Workspace resolution is automatic — the tools use the user's saved default. If any tool returns a "workspace_selection_required" error, call `inflight_list_workspaces`, ask the user to pick, and pass `workspace_id` on subsequent calls.
+**Note:** Workspace resolution is automatic — the tools use the user's saved default. If any tool returns a "workspace_selection_required" error, call `inflight_get_workspaces`, ask the user to pick, then call `inflight_set_default_workspace` with their choice. All subsequent tools will use it automatically.
 
 ## Step 0: Check Inflight Connection
 
-Before anything else, verify the Inflight MCP tools are available by calling `inflight_list_workspaces`. If the call succeeds, remember the result (you'll need it in Step 1 if the widget isn't installed). Continue to Step 1.
+Before anything else, verify the Inflight MCP tools are available by calling `inflight_get_workspaces`. If the call succeeds, remember the result (you'll need it in Step 1 if the widget isn't installed). Continue to Step 1.
 
 If it fails or the tool isn't available, tell the user:
 
@@ -35,11 +35,10 @@ Search for `inflight.co/widget.js` in layout/HTML files (not docs or configs). C
 
 **If NOT found:** The widget needs to be added.
 
-1. Use the workspace data from Step 0 (don't call `inflight_list_workspaces` again). Each workspace has a `widget_id` and indicates which is the user's default (`is_default: true`).
+1. Use the workspace data from Step 0 (don't call `inflight_get_workspaces` again). Each workspace has a `widget_id` and indicates which is the user's default (`is_default: true`).
    - If only one workspace → use it automatically
    - If one is marked `is_default: true` → use it automatically
-   - If multiple and no default → ask: "Which workspace is this project for?"
-   - The chosen workspace will be used for the rest of the flow.
+   - If multiple and no default → ask: "Which workspace is this project for?" Then call `inflight_set_default_workspace` with their choice.
 2. Insert this script tag into the root layout file, just before `</body>` (or as the last child of `<body>` in JSX/TSX):
 
 ```html
@@ -47,8 +46,6 @@ Search for `inflight.co/widget.js` in layout/HTML files (not docs or configs). C
 ```
 
 3. Commit and push the change immediately so it's included in the next deployment.
-
-Remember the `workspace_id` you resolved here — pass it to subsequent tool calls so the user isn't asked again.
 
 ## Step 2: Deployment Provider Detection
 
@@ -234,6 +231,7 @@ Don't use generic names like "UI updates" or "Various changes" for either.
 Call `inflight_create_version` with everything gathered:
 
 - `staging_url` from Step 5
+- `starting_route` — if the main UI change is on a specific route (e.g., `/checkout`, `/settings/profile`), pass it so reviewers land on the right page. Pass null if the root path is correct.
 - `version_title` from Step 8
 - `project_name` from Step 8
 - `project_id` from Step 6 (if adding to existing project)

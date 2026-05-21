@@ -1,6 +1,6 @@
 ---
-name: implement-feedback
-description: Act on design feedback from an Inflight version. Use when the user wants to apply feedback, fix review comments, implement feedback, go through comments, or act on feedback from reviewers. Triggers on 'apply feedback', 'fix the review', 'implement feedback', 'act on feedback', 'go through the comments'.
+name: review
+description: Act on design review feedback. Use when the user wants to review feedback, apply changes, fix review comments, implement feedback, or go through comments from reviewers. Triggers on 'review', 'review feedback', 'apply feedback', 'implement feedback', 'act on feedback', 'go through the comments'.
 allowed-tools: Bash(git *) Bash(npm *) Bash(bun *) Bash(grep *) Bash(open *)
 ---
 
@@ -10,7 +10,7 @@ You are helping someone act on design feedback from their team. Communicate in p
 
 ## Step 0: Check Inflight Connection
 
-Before anything else, verify the Inflight MCP tools are available by calling `inflight_list_workspaces`. If the call succeeds, continue to Step 1.
+Before anything else, verify the Inflight MCP tools are available by calling `inflight_get_workspaces`. If the call succeeds, continue to Step 1.
 
 If it fails or the tool isn't available, tell the user:
 
@@ -20,21 +20,29 @@ If it fails or the tool isn't available, tell the user:
 
 ## Step 1: Fetch Feedback
 
-If the user provided a version ID or public ID (e.g., "$ARGUMENTS"), call `inflight_get_feedback` with it. Otherwise, call `inflight_list_versions` to show their recent versions and ask which one to act on.
+If the user provided a version ID or public ID (e.g., "$ARGUMENTS"), call `inflight_get_version_report` with it.
 
-The feedback is organized by **question** (the feedback guide hierarchy). Each question may have:
-- **Question-level boosts:** Vibe checks (1-7 scores), polls (vote results), ship its (approval gate)
-- **Discussion thread:** Chronological replies that can be text, text + element pin (with DOM forensics), recordings (with transcripts), or text + image attachments
-- **Sub-replies:** Threaded responses within the discussion
+Otherwise, call `inflight_list_versions` and check the current git state (branch, recent commits). Each version includes `branch`, `commit_sha`, and `commit_message`. Try to auto-select:
+
+- **Branch match + commits are related** → use that version, tell the user: "Pulling feedback from *[version title]*."
+- **Multiple possible matches or unsure** → ask the user to pick.
+- **No match** → show the list and ask.
+
+The report has two sections:
+
+1. **Feedback Context** — the full feedback discussion organized by question. Each question has boosts (vibe checks, polls, ship-its), a discussion thread (text, element pins with DOM forensics, recordings with transcripts), and sub-replies. Read this first to understand the full picture.
+2. **Next Steps** — actionable items distilled from the feedback. These are what you'll implement. Each has a title, description, and status (pending/completed).
+
+**Your job: read the entire feedback context to understand the conversation, then focus on the next steps for implementation.**
 
 ## Hard Rules
 
 1. **Do NOT implement anything until the Action Plan is approved.** Triage first.
-2. **Read ALL feedback before presenting anything.** Every question, boost, response, and reply thread. You need the full picture to cross-reference. A vibe check in Question 1 is explained by element pins and recordings in that same question. A Ship It blocker connects to unresolved feedback elsewhere.
-3. **Each question is a thematic thread.** Everything under a question is the team's response to that focus area. Multiple action items can emerge from one question.
-4. **Only ask when the user's decision is needed.** If the team already resolved something in the thread, present the conclusion and move on.
+2. **Read the ENTIRE feedback context before triaging next steps.** You need the full picture to understand why each next step exists. A vibe check score is explained by element pins and recordings in that question. A Ship It blocker connects to unresolved next steps.
+3. **Focus implementation on the next steps, not the raw feedback.** Next steps are the distilled action items. Use the feedback context to understand them, locate code (via element pin DOM context), and resolve ambiguity.
+4. **Only ask when the user's decision is needed.** If the feedback threads already resolved something, present the conclusion and move on.
 5. **Use DOM context to find source code.** Element pins include DOM path, CSS selectors, semantic attributes (data-testid, role, aria-label), computed styles, and nearby elements. Use these to locate the exact component file.
-6. **Cross-reference everything.** Connect feedback across questions. If a recording mentions the same issue as an element pin elsewhere, note the overlap. If Ship It blockers map to specific items, draw that line.
+6. **Cross-reference feedback with next steps.** Connect next steps back to their original feedback context. If a next step seems unclear, the feedback discussion will have the detail.
 
 ## Red Flags
 
@@ -65,46 +73,32 @@ The feedback is organized by **question** (the feedback guide hierarchy). Each q
 
 ## Phase 1: Triage
 
-Read every feedback item and its entire thread. Then classify each question:
+Read the entire feedback context first. Then classify each **next step**:
 
-- **Resolved** — Team discussed and reached a conclusion. No user input needed.
-- **Unresolved disagreement** — Reviewers disagree, no conclusion. Needs user's call.
-- **Clear actionable** — Points to specific fixes, team aligned. Confirm approach with user.
-- **Decision made** — Poll or ship-it has a clear result. Present for confirmation.
-- **Low signal** — Vibe check 6+/7, positive comments only. Acknowledge and move on.
-- **Ambiguous** — Unclear what's being asked. Flag for clarification.
+- **Clear actionable** — The next step is specific, the feedback context confirms the approach. Ready to implement.
+- **Needs clarification** — The next step is vague or the feedback context shows disagreement. Needs user's call.
+- **Already completed** — Marked as completed. Skip.
+- **Blocked** — Depends on an architectural decision or external factor. Flag for user.
+
+For each next step, use the feedback context to:
+- **Find the source code** — element pins have DOM paths, selectors, semantic attributes. Use these to locate the exact component file.
+- **Understand intent** — read the feedback thread that motivated the next step. What did reviewers actually want?
+- **Check for consensus** — did the thread resolve? Or are reviewers still disagreeing?
 
 ### Present the Triage
 
-Start with a high-level overview of the entire feedback guide — how many questions, reviewers, what's resolved vs needs input.
+Start with a high-level overview: how many next steps, how many are clear vs need input, overall Ship It status.
 
 Then walk through:
 
-**1. Resolved items first (batch and confirm fast):**
-Present all resolved items together. "These were already resolved in the threads: [list]. Sound right?" One quick confirm.
+**1. Clear actionable items (batch and confirm fast):**
+Present all straightforward next steps together with your proposed approach for each. One quick confirm to proceed.
 
-**2. Actionable items (grouped by question):**
+**2. Items needing clarification:**
+Present each one with the conflicting feedback context. "The feedback shows [X] vs [Y]. Your call?"
 
-For each question with actionable feedback:
-
-*Vibe Check context:*
-Don't triage the score alone. It provides context. "This scored X/7. Let's look at the discussion to understand what's driving it."
-
-*Discussion replies — handle by type:*
-
-- **Element Pin (has DOM context):** Quote the feedback, show key DOM context (path, selector, styles, viewport). Search the codebase to find the source file. Check sub-replies for team consensus. Propose approach.
-- **Recording:** Present each timestamped issue separately from the transcript. You can't watch the video — work from transcript and timestamped comments only.
-- **Text reply (no DOM context):** Try to infer code location from the content. If can't, ask user.
-- **Image attachment:** Reference the image in your proposed approach if you can view it.
-
-*After all items in a question, summarize back to the vibe check:*
-"The low score seems driven by [specific issues]. Addressing those should move it up."
-
-**3. Unresolved disagreements:**
-"[Reviewer A] thinks X, [Reviewer B] thinks Y. No resolution in the thread. Your call?"
-
-**4. Ship It status (last):**
-Connect blockers to specific feedback items. "[Reviewer] hasn't approved — their open items are [X] and [Y]. Addressing those likely unblocks their approval."
+**3. Ship It status (last):**
+Connect Ship It blockers to specific next steps. "[Reviewer] hasn't approved — addressing next steps [X] and [Y] likely unblocks their approval."
 
 **Positive feedback — weave in naturally, don't stop for it.**
 
@@ -116,18 +110,14 @@ After triage, produce:
 ## Action Plan
 
 ### Will Implement
-1. **[Description]** — [Approach]
-   Source: Question [#], [reviewer]
+1. **[Next Step Title]** — [Approach]
    Files: [expected files]
 
 ### Skipped
-- **[Description]** — [Reason]
-
-### Out of Scope
-- **[Description]** — [Why]
+- **[Next Step Title]** — [Reason]
 
 ### Needs More Discussion
-- **[Description]** — [Open question]
+- **[Next Step Title]** — [Open question]
 ```
 
 Ask the user to review and approve before any code changes.
