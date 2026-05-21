@@ -1,7 +1,7 @@
 {
 	"name": "inflight",
 	"description": "Design feedback plugin for AI coding agents — share work for review, collect structured feedback, and implement changes.",
-	"version": "1.4.0",
+	"version": "1.5.0",
 	"author": {
 		"name": "Inflight",
 		"email": "support@inflight.co"
@@ -9,15 +9,7 @@
 	"homepage": "https://www.inflight.co",
 	"repository": "https://github.com/inflightsoftware/inflight-plugin",
 	"license": "MIT",
-	"keywords": [
-		"inflight",
-		"design-review",
-		"feedback",
-		"staging",
-		"preview",
-		"vercel",
-		"netlify"
-	],
+	"keywords": ["inflight", "design-review", "feedback", "staging", "preview", "vercel", "netlify"],
 	"logo": "./assets/inflight.png",
 	"skills": "./skills/",
 	"interface": {
@@ -26,15 +18,8 @@
 		"longDescription": "Use Inflight to share staging deployments for design review, collect structured feedback (element pins, polls, vibe checks, recordings), and implement changes from your coding agent.",
 		"developerName": "Inflight",
 		"category": "Coding",
-		"capabilities": [
-			"Interactive",
-			"Read",
-			"Write"
-		],
-		"defaultPrompt": [
-			"Share my work for review",
-			"Implement the feedback from my team"
-		],
+		"capabilities": ["Interactive", "Read", "Write"],
+		"defaultPrompt": ["Share my work for review", "Implement the feedback from my team"],
 		"websiteURL": "https://www.inflight.co",
 		"brandColor": "#6366F1"
 	}

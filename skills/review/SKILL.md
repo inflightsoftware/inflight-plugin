@@ -4,9 +4,11 @@ description: Act on design review feedback. Use when the user wants to review fe
 allowed-tools: Bash(git *) Bash(npm *) Bash(bun *) Bash(grep *) Bash(open *)
 ---
 
-# Inflight: Act on Feedback
+# Inflight: Review
 
-You are helping someone act on design feedback from their team. Communicate in plain language — describe visual outcomes, not code details. Say "I made the button bigger so it's easier to tap on mobile" not "I changed min-height to 44px in SubmitButton.tsx". The user can always ask for technical details if they want them.
+You are helping someone act on design review feedback from their team. Communicate in plain language — describe visual outcomes, not code details. Say "I made the button bigger so it's easier to tap on mobile" not "I changed min-height to 44px in SubmitButton.tsx". The user can always ask for technical details if they want them.
+
+**Note:** Workspace resolution is automatic — the tools use the user's saved default. If any tool returns a "workspace_selection_required" error, call `inflight_get_workspaces`, ask the user to pick, then call `inflight_set_default_workspace` with their choice. All subsequent tools will use it automatically.
 
 ## Step 0: Check Inflight Connection
 
@@ -18,7 +20,7 @@ If it fails or the tool isn't available, tell the user:
 
 **Do NOT proceed with any other steps until this check passes.**
 
-## Step 1: Fetch Feedback
+## Step 1: Fetch Version Report
 
 If the user provided a version ID or public ID (e.g., "$ARGUMENTS"), call `inflight_get_version_report` with it.
 
@@ -48,8 +50,8 @@ The report has two sections:
 
 | Thought | Reality |
 |---------|---------|
-| "This feedback is obvious, I'll just implement it" | Triage first. The thread may have resolved it differently. |
-| "I'll batch all the small fixes together" | Each feedback item is its own commit and triage decision. |
+| "This next step is obvious, I'll just implement it" | Triage first. The feedback thread may have resolved it differently. |
+| "I'll batch all the small fixes together" | Each next step is its own commit and triage decision. |
 | "Can't find the file from DOM path, I'll search broadly" | Use the exact selector, data-testid, class names first. Ask the user before broad search. |
 | "The vibe check is low, I should fix it" | A vibe check isn't an action item. Fix the specifics under that question, the score follows. |
 | "All feedback seems positive, we're done" | Check Ship It status. Not fully approved = unresolved work. |
@@ -59,8 +61,8 @@ The report has two sections:
 
 **Halt and ask the user when:**
 - You can't locate a source file after searching with DOM context
-- Two feedback items contradict each other with no resolution in the thread
-- A feedback item references a page/feature not in the codebase
+- Two next steps contradict each other with no resolution in the thread
+- A next step references a page/feature not in the codebase
 - The fix requires an architectural change, not just styling
 - The implementation would break existing tests
 
@@ -144,8 +146,8 @@ For each approved item:
 - Mention which file you changed, but don't explain the code unless asked.
 
 **4. Commit separately**
-- One commit per feedback item.
-- Format: `fix: [what changed] (feedback from [reviewer])`
+- One commit per next step.
+- Format: `fix: [what changed]`
 
 **Escalation:** If a change is more complex than expected, would break something, or contradicts existing patterns — pause and tell the user before proceeding.
 
@@ -156,18 +158,18 @@ For each approved item:
 1. Run build, lint, type-check. All must pass.
 2. Run tests for modified files if they exist.
 3. Fix any failures before presenting the summary.
-4. **Self-review:** Re-read each feedback item from the triage and confirm your change actually addresses it. If you realize a change missed the point, fix it before presenting the summary.
+4. **Self-review:** Re-read each next step from the triage and confirm your change actually addresses it. If you realize a change missed the point, fix it before presenting the summary.
 
 When verified:
 
 ```
 ## Implementation Summary
 
-| # | Feedback | Reviewer | File(s) Changed | What Changed |
-|---|----------|----------|-----------------|--------------|
-| 1 | [feedback] | [reviewer] | [files] | [change] |
+| # | Next Step | File(s) Changed | What Changed |
+|---|-----------|-----------------|--------------|
+| 1 | [title] | [files] | [change] |
 
-**Addressed:** X of Y actionable items
+**Addressed:** X of Y next steps
 **Verification:** Build ✓ | Lint ✓ | Types ✓
 
 ### Ship It Status
@@ -183,4 +185,4 @@ After pushing, ask:
 
 > "Feedback addressed and pushed. Want to share the updated version on Inflight for another round of review?"
 
-If yes, run the full share flow (staging URL, git info, feedback guide, etc.). Create a **new version** under the **same `project_id`** from the version you just acted on — don't create a new project or override the previous version.
+If yes, invoke the **share** skill. It will handle staging URL resolution, git info, feedback guide generation, and version creation. The share skill's auto-matching (Step 6) should detect the existing project and add a new version to it.

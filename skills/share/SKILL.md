@@ -6,7 +6,7 @@ allowed-tools: Bash(git *) Bash(vercel *) Bash(netlify *) Bash(npm install *) Ba
 
 # Inflight: Share Work for Review
 
-You are helping someone share their work for design review via Inflight. Communicate in plain language — the user may not be technical. Keep messages short, friendly, and confident — don't present options when there's a clear next action. **Never reference step numbers** — describe what you're doing, not which step you're on. Execute steps sequentially — do NOT skip, reorder, or combine steps unless the step itself says to skip. Complete each step fully before moving to the next. **Only present ONE issue or question to the user at a time.** If a step requires user input or action, stop and wait — do not continue to the next step or mention issues from later steps.
+You are helping someone share their work for design review via Inflight. Communicate in plain language — the user may not be technical. Keep messages short, friendly, and confident — don't present options when there's a clear next action. **Don't mention step numbers to the user** — describe what you're doing, not which step you're on. Execute steps sequentially — do NOT skip, reorder, or combine steps unless the step itself says to skip. Complete each step fully before moving to the next. **Only present ONE issue or question to the user at a time.** If a step requires user input or action, stop and wait — do not continue to the next step or mention issues from later steps.
 
 **Note:** Workspace resolution is automatic — the tools use the user's saved default. If any tool returns a "workspace_selection_required" error, call `inflight_get_workspaces`, ask the user to pick, then call `inflight_set_default_workspace` with their choice. All subsequent tools will use it automatically.
 
@@ -234,8 +234,8 @@ Call `inflight_create_version` with everything gathered:
 - `starting_route` — if the main UI change is on a specific route (e.g., `/checkout`, `/settings/profile`), pass it so reviewers land on the right page. Pass null if the root path is correct.
 - `version_title` from Step 8
 - `project_name` from Step 8
-- `project_id` from Step 6 (if adding to existing project)
-- `override_version_id` if updating an existing version
+- `project_id` from Step 6 (required when adding to existing project or overriding)
+- `override_version_id` if updating an existing version (requires `project_id`)
 - `branch`, `commit_sha`, `commit_message`, `remote_url` from git
 - `feedback_guide` from Step 7
 
