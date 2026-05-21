@@ -138,21 +138,30 @@ Find the deploy matching the current commit SHA. If no match:
 
 ## Step 6: Project Resolution
 
-**MANDATORY: You MUST present options and wait for the user to choose. Do NOT auto-select a project based on branch name or any other heuristic. Do NOT skip this step.**
+Call `inflight_list_recent_projects` with `limit: 10`. Use the results plus the current git state (branch, recent commits from Step 4) to decide where this version belongs. **Do not ask the user — decide and inform.**
 
-Call `inflight_list_recent_projects` with `limit: 5`. Present the projects to the user as a numbered list with their latest version title and branch. Highlight any that match the current git branch. Include "Show more projects" and "Create new project" as options. If the user picks "Show more", call again with `limit: 10` and re-present. Ask the user to pick.
+### How to decide
 
-**Wait for the user's response before proceeding. Do NOT assume which project the user wants.**
+Each project in the response includes its latest version's `branch`, `commit_sha`, and `commit_message`. Compare these against the current git branch and recent commit history.
 
-If the user picks an existing project whose latest version has **0 comments** (no feedback yet), you MUST ask: "This version has no feedback yet. Would you like to:"
+- **Clear match** — the current branch matches a project's latest version branch AND the commits are a continuation of the same work (e.g., the stored `commit_sha` appears in your branch's history, or the `commit_message` topics are clearly related). → **Add a new version to that project.**
+- **Branch matches but work is unrelated** — the branch name matches but the commits/messages are about something completely different (branch name was reused). → **Create a new project.**
+- **No branch match** — no project's latest version shares the current branch. → **Create a new project.**
+- **On main/master** — many projects may have `branch: "main"`. Don't try to match. → **Create a new project.**
 
-1. Update its staging URL (keeps the same version)
-2. Create a new version
+### The "just shared" exception
 
-**Wait for the user's response. Do NOT auto-select "update" or "new version" — this is the user's decision.**
+If you find a matching project whose latest version was created **less than 1 hour ago**, has **0 comments**, and is clearly the same work — the user may have just shared and then pushed a fix. Ask once:
 
-- If user picks update → use `override_version_id` (the version ID from the project's latest version)
-- If user picks new version → normal flow (no `override_version_id`)
+> "You shared *[version title]* [X minutes] ago. Want to update that version or create a new one?"
+
+- Update → use `override_version_id` (the version's `id`)
+- New → normal flow
+
+This is the **only** prompt in this step. In all other cases, just decide and tell the user what you're doing:
+
+- "Adding a new version to *[project name]*."
+- "Creating a new project for this."
 
 ## Step 7: Generate Feedback Guide
 

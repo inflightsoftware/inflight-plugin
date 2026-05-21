@@ -8,16 +8,7 @@
 	"homepage": "https://www.inflight.co",
 	"repository": "https://github.com/inflightsoftware/inflight-plugin",
 	"license": "MIT",
-	"keywords": [
-		"inflight",
-		"design-review",
-		"feedback",
-		"staging",
-		"preview",
-		"vercel",
-		"netlify",
-		"mcp"
-	],
+	"keywords": ["inflight", "design-review", "feedback", "staging", "preview", "vercel", "netlify", "mcp"],
 	"logo": "assets/inflight.png",
 	"skills": "skills",
 	"mcpServers": ".mcp.json"
