@@ -22,7 +22,7 @@ If it fails or the tool isn't available, tell the user:
 
 ## Step 1: Widget Script Tag Check
 
-Verify the Inflight widget script tag is in the project's root layout file. Without it, the feedback guide won't appear on the staging site.
+Verify the Inflight widget script tag is present AND has the correct `data-workspace` value. A wrong value (e.g., workspace slug or UUID instead of `widget_id`) causes the widget to silently fail — it loads but never renders.
 
 Search for `inflight.co/widget.js` in layout/HTML files (not docs or configs). Common locations:
 
@@ -31,21 +31,24 @@ Search for `inflight.co/widget.js` in layout/HTML files (not docs or configs). C
 - **Remix:** `app/root.tsx`
 - **SvelteKit:** `src/app.html`
 
-**If found:** Continue to Step 2.
+Use the workspace data from Step 0 (don't call `inflight_get_workspaces` again). Each workspace has a `widget_id` (an 8-character nanoid). Resolve which workspace to use:
 
-**If NOT found:** The widget needs to be added.
+- If only one workspace → use it automatically
+- If one is marked `is_default: true` → use it automatically
+- If multiple and no default → ask: "Which workspace is this project for?" Then call `inflight_set_default_workspace` with their choice.
 
-1. Use the workspace data from Step 0 (don't call `inflight_get_workspaces` again). Each workspace has a `widget_id` and indicates which is the user's default (`is_default: true`).
-   - If only one workspace → use it automatically
-   - If one is marked `is_default: true` → use it automatically
-   - If multiple and no default → ask: "Which workspace is this project for?" Then call `inflight_set_default_workspace` with their choice.
-2. Insert this script tag into the root layout file, just before `</body>` (or as the last child of `<body>` in JSX/TSX):
+**If the tag is NOT found:** Insert this script tag into the root layout file, just before `</body>` (or as the last child of `<body>` in JSX/TSX):
 
 ```html
 <script src="https://www.inflight.co/widget.js" data-workspace="<widget_id>" async></script>
 ```
 
-3. Commit and push the change immediately so it's included in the next deployment.
+Commit and push the change immediately so it's included in the next deployment.
+
+**If the tag IS found:** Read the `data-workspace` attribute value.
+
+- If it equals the workspace's `widget_id` → continue to Step 2.
+- If it differs → rewrite ONLY the `data-workspace="..."` attribute to use the correct `widget_id`. Leave the rest of the tag intact. Commit and push immediately.
 
 ## Step 2: Deployment Provider Detection
 
