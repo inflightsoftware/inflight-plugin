@@ -26,7 +26,7 @@ If the user provided a version ID or public ID (e.g., "$ARGUMENTS"), call `infli
 
 Otherwise, call `inflight_list_versions` and check the current git state (branch, recent commits). Each version includes `branch`, `commit_sha`, and `commit_message`. Try to auto-select:
 
-- **Branch match + commits are related** → use that version, tell the user: "Pulling feedback from *[version title]*."
+- **Branch match + commits are related** → use that version, tell the user: "Pulling feedback from _[version title]_."
 - **Multiple possible matches or unsure** → ask the user to pick.
 - **No match** → show the list and ask.
 
@@ -48,18 +48,19 @@ The report has two sections:
 
 ## Red Flags
 
-| Thought | Reality |
-|---------|---------|
-| "This next step is obvious, I'll just implement it" | Triage first. The feedback thread may have resolved it differently. |
-| "I'll batch all the small fixes together" | Each next step is its own commit and triage decision. |
-| "Can't find the file from DOM path, I'll search broadly" | Use the exact selector, data-testid, class names first. Ask the user before broad search. |
-| "The vibe check is low, I should fix it" | A vibe check isn't an action item. Fix the specifics under that question, the score follows. |
-| "All feedback seems positive, we're done" | Check Ship It status. Not fully approved = unresolved work. |
-| "I'll implement everything and let user review after" | Action plan must be approved BEFORE implementation. |
+| Thought                                                  | Reality                                                                                      |
+| -------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| "This next step is obvious, I'll just implement it"      | Triage first. The feedback thread may have resolved it differently.                          |
+| "I'll batch all the small fixes together"                | Each next step is its own commit and triage decision.                                        |
+| "Can't find the file from DOM path, I'll search broadly" | Use the exact selector, data-testid, class names first. Ask the user before broad search.    |
+| "The vibe check is low, I should fix it"                 | A vibe check isn't an action item. Fix the specifics under that question, the score follows. |
+| "All feedback seems positive, we're done"                | Check Ship It status. Not fully approved = unresolved work.                                  |
+| "I'll implement everything and let user review after"    | Action plan must be approved BEFORE implementation.                                          |
 
 ## Stop Conditions
 
 **Halt and ask the user when:**
+
 - You can't locate a source file after searching with DOM context
 - Two next steps contradict each other with no resolution in the thread
 - A next step references a page/feature not in the codebase
@@ -67,6 +68,7 @@ The report has two sections:
 - The implementation would break existing tests
 
 **Never:**
+
 - Implement feedback the team explicitly marked as out of scope
 - Guess at what a reviewer meant — ask for clarification
 - Skip the action plan approval gate, no matter how small the changes
@@ -75,14 +77,14 @@ The report has two sections:
 
 ## Phase 1: Triage
 
-Read the entire feedback context first. Then classify each **next step**:
+Read the entire feedback context first. **Skip any next step marked as completed** — don't triage, plan, or implement it. For the remaining pending next steps, classify each:
 
 - **Clear actionable** — The next step is specific, the feedback context confirms the approach. Ready to implement.
 - **Needs clarification** — The next step is vague or the feedback context shows disagreement. Needs user's call.
-- **Already completed** — Marked as completed. Skip.
 - **Blocked** — Depends on an architectural decision or external factor. Flag for user.
 
-For each next step, use the feedback context to:
+For each pending next step, use the feedback context to:
+
 - **Find the source code** — element pins have DOM paths, selectors, semantic attributes. Use these to locate the exact component file.
 - **Understand intent** — read the feedback thread that motivated the next step. What did reviewers actually want?
 - **Check for consensus** — did the thread resolve? Or are reviewers still disagreeing?
@@ -131,23 +133,32 @@ Work through approved items sequentially. Don't pause between items unless block
 For each approved item:
 
 **1. Locate the source file**
+
 - Element pin data → search using DOM path, selectors, data-testid, class names, semantic attributes. Trust this data — it's precise.
 - No pin data → use keywords from the feedback (component names, text content, route paths).
 - Found → confirm the file and proceed.
 - Not found → stop and ask the user. Don't guess.
 
 **2. Make the minimal change**
+
 - Address exactly what the feedback asked for. No more, no less.
 - Don't refactor surrounding code or "improve" things that weren't flagged.
 - If the fix requires a larger change, flag it before proceeding.
 
 **3. Explain what you changed**
+
 - Describe the visual outcome: "I made the submit button bigger so it's easier to tap on mobile" or "I fixed the spacing between form fields so they're consistent."
 - Mention which file you changed, but don't explain the code unless asked.
 
 **4. Commit separately**
+
 - One commit per next step.
 - Format: `fix: [what changed]`
+
+**5. Mark as completed**
+
+- After committing, call `inflight_complete_next_step` with the next step's ID.
+- Do this immediately after each commit — not in batch at the end.
 
 **Escalation:** If a change is more complex than expected, would break something, or contradicts existing patterns — pause and tell the user before proceeding.
 
