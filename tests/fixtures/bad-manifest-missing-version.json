@@ -1,0 +1,6 @@
+{
+  "name": "inflight",
+  "description": "missing version field",
+  "repository": "https://github.com/inflightsoftware/inflight-plugin",
+  "license": "MIT"
+}
