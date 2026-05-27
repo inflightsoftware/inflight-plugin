@@ -32,7 +32,9 @@ The workflow fires automatically on every PR and on push to `main`. You can also
 | `ci/install-lifecycle/install.test.ts` | `npx plugins add` from local checkout + filesystem verify + cleanup | every PR in CI |
 | `ci/mcp-contract/contract.test.ts` | All 7 MCP tools return shapes matching the saved schemas | **local / manual only** — see below |
 
-## MCP contract tests (local / manual)
+## MCP contract tests (local / manual — pending migration)
+
+> **Note (2026-05-27):** These tests are being moved to `inflight-vite/apps/mcp/src/__tests__/`, where the auth problem solves itself (direct supabaseAdmin access) and contract drift fails in the same PR that introduces it. See the migration plan at [`../docs/superpowers/plans/2026-05-27-migrate-mcp-contract-tests-to-inflight-vite.md`](../docs/superpowers/plans/2026-05-27-migrate-mcp-contract-tests-to-inflight-vite.md). The files under `ci/mcp-contract/` are frozen reference until that migration ships — see [`ci/mcp-contract/NOTE.md`](ci/mcp-contract/NOTE.md).
 
 The Inflight MCP server (`https://mcp.inflight.co`) authenticates via OAuth 2.0 (RFC 9728); it does not issue personal access tokens. Session tokens are minted only via the OAuth PKCE flow (see `apps/api/src/routes/mcp.ts` in `inflight-vite`). We don't have a CI-friendly path to mint one today, so these tests aren't part of automated CI. Run them locally when the MCP wire format or response shape may have changed — e.g., before shipping a change that touches `apps/mcp` in `inflight-vite`, or when adding a new skill that depends on a new MCP field.
 
