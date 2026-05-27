@@ -39,3 +39,15 @@ Triggers automatically when you say things like "apply feedback", "fix the revie
 
 - [Claude Code](https://docs.anthropic.com/en/docs/claude-code) or [Cursor](https://www.cursor.com)
 - An [Inflight](https://www.inflight.co) account
+
+## Testing
+
+CI runs three test categories on every PR:
+
+- **Static validators** — manifest, skill frontmatter, internal link, widget template checks. No secrets required.
+- **MCP contract** — hits `https://mcp.inflight.co` to verify the tool response shapes the skills depend on.
+- **Install lifecycle** — runs on `push` to main only; installs the plugin from the merged commit via `npx plugins add` and verifies it appears under `~/.claude/plugins/`.
+
+To run locally: `cd tests && pnpm install && pnpm test:static`.
+
+See [tests/README.md](tests/README.md) for the full guide.
