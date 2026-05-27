@@ -37,7 +37,6 @@ const describeIf = client ? describe : describe.skip;
 
 describeIf("MCP contract — all 7 tools", () => {
   let workspaceId: string;
-  let widgetId: string;
 
   beforeAll(async () => {
     // Sanity: pick the CI workspace's id for later state-changing calls
@@ -46,7 +45,6 @@ describeIf("MCP contract — all 7 tools", () => {
     >("inflight_get_workspaces");
     if (workspaces.length === 0) throw new Error("CI token has no workspaces");
     workspaceId = workspaces[0]!.id;
-    widgetId = workspaces[0]!.widget_id;
   });
 
   it("inflight_get_workspaces", async () => {

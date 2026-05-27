@@ -11,7 +11,7 @@ export interface PluginManifest {
 }
 
 export interface McpConfig {
-  mcpServers: Record<string, { type?: string; url: string }>;
+  mcpServers: Record<string, { type: string; url: string }>;
 }
 
 export function loadJson<T = unknown>(path: string): T {
