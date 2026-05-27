@@ -10,8 +10,8 @@
 	"repository": "https://github.com/inflightsoftware/inflight-plugin",
 	"license": "MIT",
 	"keywords": ["inflight", "design-review", "feedback", "staging", "preview", "vercel", "netlify"],
-	"logo": "./assets/inflight.png",
 	"skills": "./skills/",
+	"mcpServers": "./.mcp.json",
 	"interface": {
 		"displayName": "Inflight",
 		"shortDescription": "Share work for design review, collect feedback, and implement changes",
@@ -21,6 +21,7 @@
 		"capabilities": ["Interactive", "Read", "Write"],
 		"defaultPrompt": ["Share my work for review", "Implement the feedback from my team"],
 		"websiteURL": "https://www.inflight.co",
-		"brandColor": "#6366F1"
+		"brandColor": "#6366F1",
+		"logo": "./assets/inflight.png"
 	}
 }
