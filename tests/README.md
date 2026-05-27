@@ -12,6 +12,17 @@ pnpm test:install   # install lifecycle (CI-only; otherwise skipped)
 pnpm test           # everything
 ```
 
+To exercise the MCP contract tests locally, export the four `INFLIGHT_CI_*` env vars listed below before `pnpm test:mcp`. To exercise the install lifecycle locally, set `CI=1` — **note this actually installs the plugin into your `~/.claude/plugins/` and removes it afterwards**, so prefer running it in CI.
+
+## Triggering CI manually
+
+The workflow fires automatically on every PR and on push to `main`. You can also trigger it by hand:
+
+- **GitHub UI**: Actions tab → **CI** workflow → **Run workflow** → pick a branch → Run. Useful when you want to re-run without pushing a new commit (e.g., after rotating secrets).
+- **`gh` CLI**: `gh workflow run CI --ref <branch>`. Then watch with `gh run watch`.
+
+The MCP contract and install lifecycle jobs run on every PR; they only do meaningful work if the appropriate secrets / env are present (see below).
+
 ## Tier 1: CI (this PR)
 
 | Category | What it checks | Runs in CI on |
