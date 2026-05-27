@@ -21,7 +21,7 @@ pnpm test           # everything
 | `ci/static/links.test.ts` | All relative markdown links resolve | every PR |
 | `ci/static/widget.test.ts` | Widget tag template stays in sync with the `share` skill | every PR |
 | `ci/mcp-contract/contract.test.ts` | All 7 MCP tools return shapes matching the saved schemas | every PR |
-| `ci/install-lifecycle/install.test.ts` | `npx plugins add` from local checkout + filesystem verify + cleanup | push to main only |
+| `ci/install-lifecycle/install.test.ts` | `npx plugins add` from local checkout + filesystem verify + cleanup | every PR |
 
 ## Required GitHub secrets
 

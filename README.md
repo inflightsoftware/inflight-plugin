@@ -46,7 +46,7 @@ CI runs three test categories on every PR:
 
 - **Static validators** — manifest, skill frontmatter, internal link, widget template checks. No secrets required.
 - **MCP contract** — hits `https://mcp.inflight.co` to verify the tool response shapes the skills depend on.
-- **Install lifecycle** — runs on `push` to main only; installs the plugin from the merged commit via `npx plugins add` and verifies it appears under `~/.claude/plugins/`.
+- **Install lifecycle** — installs the plugin from the local checkout via `npx plugins add`, verifies it appears under `~/.claude/plugins/`, then cleans up.
 
 To run locally: `cd tests && pnpm install && pnpm test:static`.
 
