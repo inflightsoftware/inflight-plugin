@@ -29,30 +29,6 @@ jobs:
       - run: pnpm test:static
         working-directory: tests
 
-  mcp-contract:
-    name: MCP contract
-    runs-on: ubuntu-latest
-    needs: static
-    steps:
-      - uses: actions/checkout@v4
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 9
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: pnpm
-          cache-dependency-path: tests/pnpm-lock.yaml
-      - run: pnpm install --frozen-lockfile
-        working-directory: tests
-      - run: pnpm test:mcp
-        working-directory: tests
-        env:
-          INFLIGHT_CI_TOKEN: ${{ secrets.INFLIGHT_CI_TOKEN }}
-          INFLIGHT_CI_PROJECT_ID: ${{ secrets.INFLIGHT_CI_PROJECT_ID }}
-          INFLIGHT_CI_SEEDED_VERSION_PUBLIC_ID: ${{ secrets.INFLIGHT_CI_SEEDED_VERSION_PUBLIC_ID }}
-          INFLIGHT_CI_NEXT_STEP_ID: ${{ secrets.INFLIGHT_CI_NEXT_STEP_ID }}
-
   install-lifecycle:
     name: Install lifecycle (Claude Code)
     runs-on: ubuntu-latest

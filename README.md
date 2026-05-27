@@ -42,12 +42,11 @@ Triggers automatically when you say things like "apply feedback", "fix the revie
 
 ## Testing
 
-CI runs three test categories on every PR:
+CI runs two test categories on every PR:
 
 - **Static validators** — manifest, skill frontmatter, internal link, widget template checks. No secrets required.
-- **MCP contract** — hits `https://mcp.inflight.co` to verify the tool response shapes the skills depend on.
 - **Install lifecycle** — installs the plugin from the local checkout via `npx plugins add`, verifies it appears under `~/.claude/plugins/`, then cleans up.
 
-To run locally: `cd tests && pnpm install && pnpm test:static`.
+A third category — **MCP contract tests** — exists at `tests/ci/mcp-contract/` but is local/manual only. The Inflight MCP server uses OAuth (no personal access tokens), so we run those tests by hand against a captured session token whenever the MCP wire format may have changed. See [tests/README.md](tests/README.md) for instructions.
 
-See [tests/README.md](tests/README.md) for the full guide.
+To run locally: `cd tests && pnpm install && pnpm test:static`.
