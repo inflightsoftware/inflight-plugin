@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "name", "widget_id"],
+    "properties": {
+      "id": { "type": "string" },
+      "name": { "type": "string" },
+      "widget_id": { "type": "string", "minLength": 1 },
+      "is_default": { "type": "boolean" }
+    },
+    "additionalProperties": true
+  }
+}
