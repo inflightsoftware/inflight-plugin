@@ -1,6 +1,6 @@
 # Plugin Tests
 
-Three tiers, with this PR shipping the first one. See [docs/superpowers/specs/2026-05-25-plugin-testing-strategy-design.md](../docs/superpowers/specs/2026-05-25-plugin-testing-strategy-design.md) for the full strategy.
+Three tiers, with this PR shipping the first one. The full strategy is documented in the testing-strategy spec under `docs/superpowers/specs/` (lands separately).
 
 ## Running tests locally
 
